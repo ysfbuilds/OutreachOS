@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>OutreachOS — Brand Pipeline</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%231652f0'/><text y='22' x='7' font-size='16' font-weight='700' fill='white' font-family='sans-serif'>O</text></svg>"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+:root{
+  --blue:#1652f0;--blue-dark:#0f3fcf;--blue-light:#e8effe;--blue-mid:#b3c5fb;
+  --text:#0a0b0d;--text2:#5b616e;--text3:#9ea6b4;
+  --bg:#ffffff;--bg2:#f5f7fa;--bg3:#eef0f4;
+  --border:#e2e5ec;--border2:#d0d5e0;
+  --green:#05b169;--green-bg:#e6f9f1;--green-text:#047a4a;
+  --amber:#f59f00;--amber-bg:#fff8e6;--amber-text:#a06800;
+  --red:#e03030;--red-bg:#fdeaea;--red-text:#9e1515;
+  --purple:#7c3aed;--purple-bg:#f3eefe;--purple-text:#5b21b6;
+  --shadow-sm:0 1px 3px rgba(10,11,13,.07),0 1px 2px rgba(10,11,13,.05);
+  --shadow:0 4px 16px rgba(10,11,13,.08),0 1px 4px rgba(10,11,13,.04);
+  --shadow-lg:0 16px 48px rgba(10,11,13,.12),0 4px 12px rgba(10,11,13,.06);
+  --r:10px;--r-sm:7px;--r-lg:14px;
+}
+
+html,body{height:100%;overflow:hidden}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;display:flex;flex-direction:column}
+
+/* ── Topbar ── */
+.topbar{
+  height:60px;min-height:60px;background:var(--bg);
+  border-bottom:1.5px solid var(--border);
+  display:flex;align-items:center;padding:0 24px;gap:16px;
+  position:relative;z-index:10;
+}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand-icon{
+  width:34px;height:34px;background:var(--blue);border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cabinet Grotesk',sans-serif;font-weight:800;font-size:16px;color:#fff;
+  flex-shrink:0;letter-spacing:-.02em;
+}
+.brand-name{font-family:'Cabinet Grotesk',sans-serif;font-weight:700;font-size:17px;color:var(--text);letter-spacing:-.02em}
+.brand-name span{color:var(--blue)}
+.topbar-divider{width:1px;height:24px;background:var(--border);margin:0 4px}
+.tab-nav{display:flex;gap:2px}
+.tab{
+  padding:6px 14px;border-radius:var(--r-sm);font-size:13px;font-weight:500;
+  color:var(--text2);cursor:pointer;transition:all .15s;border:none;background:none;
+  font-family:'DM Sans',sans-serif;
+}
+.tab:hover{background:var(--bg2);color:var(--text)}
+.tab.active{background:var(--blue-light);color:var(--blue);font-weight:600}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.search-wrap{position:relative}
+.search-input{
+  background:var(--bg2);border:1.5px solid var(--border);border-radius:20px;
+  padding:7px 14px 7px 36px;font-size:13px;color:var(--text);
+  font-family:'DM Sans',sans-serif;outline:none;width:220px;
+  transition:all .2s;
+}
+.search-input:focus{border-color:var(--blue);width:260px;background:var(--bg)}
+.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:14px;pointer-events:none}
+.btn{
+  display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--r-sm);
+  font-size:13px;font-weight:600;cursor:pointer;border:none;
+  font-family:'DM Sans',sans-serif;transition:all .15s;white-space:nowrap;
+}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:hover{background:var(--blue-dark)}
+.btn-ghost{background:none;color:var(--text2);border:1.5px solid var(--border)}
+.btn-ghost:hover{background:var(--bg2);color:var(--text);border-color:var(--border2)}
+
+/* ── Stats bar ── */
+.statsbar{
+  background:var(--bg);border-bottom:1px solid var(--border);
+  padding:12px 24px;display:flex;gap:32px;align-items:center;
+}
+.stat{display:flex;flex-direction:column;gap:2px}
+.stat-val{font-family:'Cabinet Grotesk',sans-serif;font-size:22px;font-weight:700;color:var(--text);line-height:1;letter-spacing:-.02em}
+.stat-lbl{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-weight:500}
+.stat-divider{width:1px;height:32px;background:var(--border)}
+
+/* ── Views ── */
+.view{flex:1;overflow:hidden;display:none}
+.view.active{display:flex;flex-direction:column}
+
+/* ── Kanban ── */
+.kanban-wrap{flex:1;overflow-x:auto;overflow-y:hidden;padding:20px 24px;display:flex;gap:14px}
+.kanban-wrap::-webkit-scrollbar{height:6px}
+.kanban-wrap::-webkit-scrollbar-track{background:transparent}
+.kanban-wrap::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+.column{
+  min-width:240px;max-width:240px;display:flex;flex-direction:column;gap:8px;
+}
+.col-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;padding:0 2px}
+.col-title{font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;display:flex;align-items:center;gap:7px}
+.col-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.col-count{font-size:11px;color:var(--text3);background:var(--bg3);padding:1px 7px;border-radius:10px;font-weight:500}
+.col-body{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:2px 2px 16px;min-height:60px}
+.col-body::-webkit-scrollbar{width:4px}
+.col-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+/* ── Brand card ── */
+.brand-card{
+  background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r);
+  padding:12px 14px;cursor:pointer;transition:all .15s;
+  box-shadow:var(--shadow-sm);
+  animation:cardIn .18s ease;
+}
+@keyframes cardIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.brand-card:hover{border-color:var(--blue-mid);box-shadow:var(--shadow);transform:translateY(-1px)}
+.bc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px}
+.bc-name{font-size:13px;font-weight:600;color:var(--text);letter-spacing:-.01em;line-height:1.3}
+.bc-niche{font-size:11px;color:var(--text3);margin-top:2px}
+.bc-avatar{
+  width:30px;height:30px;border-radius:8px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;color:#fff;
+}
+.bc-channels{display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap}
+.bc-ch{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:500;display:flex;align-items:center;gap:3px}
+.ch-email{background:var(--blue-light);color:var(--blue)}
+.ch-tiktok{background:#f0e8ff;color:#6b21a8}
+.ch-instagram{background:#fff0f8;color:#c0186a}
+.ch-linkedin{background:#e8f4ff;color:#0a6abf}
+.ch-twitter{background:var(--bg3);color:var(--text2)}
+@media(prefers-color-scheme:dark){
+  .ch-tiktok{background:#1a0a2e;color:#b090e8}
+  .ch-instagram{background:#2a0818;color:#f080b8}
+  .ch-linkedin{background:#081828;color:#60a8e8}
+}
+.bc-footer{display:flex;align-items:center;justify-content:space-between}
+.bc-date{font-size:11px;color:var(--text3)}
+.bc-priority{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600}
+.pri-high{background:var(--red-bg);color:var(--red-text)}
+.pri-medium{background:var(--amber-bg);color:var(--amber-text)}
+.pri-low{background:var(--green-bg);color:var(--green-text)}
+.add-card-btn{
+  width:100%;padding:9px;border:1.5px dashed var(--border2);border-radius:var(--r);
+  background:none;color:var(--text3);font-size:12px;cursor:pointer;
+  font-family:'DM Sans',sans-serif;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:5px;
+}
+.add-card-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-light)}
+
+/* ── Templates view ── */
+.templates-view{flex:1;overflow-y:auto;padding:24px}
+.templates-view::-webkit-scrollbar{width:6px}
+.templates-view::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+.tpl-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.tpl-title{font-family:'Cabinet Grotesk',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.02em}
+.tpl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px}
+.tpl-card{
+  background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r-lg);
+  padding:18px 20px;cursor:pointer;transition:all .15s;box-shadow:var(--shadow-sm);
+}
+.tpl-card:hover{border-color:var(--blue-mid);box-shadow:var(--shadow)}
+.tpl-card-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px}
+.tpl-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.tpl-meta{flex:1}
+.tpl-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px}
+.tpl-type{font-size:11px;color:var(--text3)}
+.tpl-subject{font-size:12px;color:var(--text2);background:var(--bg2);border-radius:6px;padding:6px 10px;margin-bottom:10px;font-style:italic}
+.tpl-preview{font-size:12px;color:var(--text2);line-height:1.6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.tpl-footer{display:flex;align-items:center;justify-content:space-between;margin-top:12px}
+.tpl-tag{font-size:11px;padding:3px 9px;border-radius:8px;background:var(--blue-light);color:var(--blue);font-weight:500}
+.copy-btn{
+  font-size:11px;padding:5px 12px;border-radius:6px;border:1.5px solid var(--border);
+  background:none;color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;
+  transition:all .12s;font-weight:500;
+}
+.copy-btn:hover{background:var(--blue);color:#fff;border-color:var(--blue)}
+.copy-btn.copied{background:var(--green);color:#fff;border-color:var(--green)}
+
+/* ── Detail panel ── */
+.panel-overlay{display:none;position:fixed;inset:0;background:rgba(10,11,13,.35);z-index:50;backdrop-filter:blur(3px)}
+.panel-overlay.open{display:block}
+.side-panel{
+  position:fixed;top:0;right:0;bottom:0;width:520px;max-width:96vw;
+  background:var(--bg);border-left:1.5px solid var(--border);
+  display:flex;flex-direction:column;z-index:51;
+  transform:translateX(100%);transition:transform .22s cubic-bezier(.4,0,.2,1);
+  box-shadow:var(--shadow-lg);
+}
+.side-panel.open{transform:translateX(0)}
+.panel-header{
+  padding:18px 20px;border-bottom:1.5px solid var(--border);
+  display:flex;align-items:center;gap:12px;
+}
+.panel-avatar{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#fff;flex-shrink:0}
+.panel-brand-name{font-family:'Cabinet Grotesk',sans-serif;font-size:17px;font-weight:700;letter-spacing:-.02em}
+.panel-niche{font-size:12px;color:var(--text3)}
+.panel-close{margin-left:auto;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:7px;cursor:pointer;border:none;background:none;color:var(--text2);font-size:18px;transition:background .12s}
+.panel-close:hover{background:var(--bg3)}
+.panel-body{flex:1;overflow-y:auto;padding:20px}
+.panel-body::-webkit-scrollbar{width:5px}
+.panel-body::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+.panel-section{margin-bottom:20px}
+.ps-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin-bottom:7px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:12px;color:var(--text2);margin-bottom:4px;font-weight:500}
+.field input,.field select,.field textarea{
+  width:100%;background:var(--bg2);border:1.5px solid var(--border);
+  border-radius:var(--r-sm);padding:8px 11px;font-size:13px;color:var(--text);
+  font-family:'DM Sans',sans-serif;outline:none;transition:border-color .15s;
+}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue);background:var(--bg)}
+.field textarea{resize:vertical;line-height:1.6;min-height:70px}
+.stage-pills{display:flex;flex-wrap:wrap;gap:6px}
+.stage-pill{
+  padding:5px 12px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;
+  border:1.5px solid var(--border);background:var(--bg2);color:var(--text2);
+  transition:all .12s;font-family:'DM Sans',sans-serif;
+}
+.stage-pill.active{border-width:2px}
+.channel-toggles{display:flex;flex-wrap:wrap;gap:6px}
+.ch-toggle{
+  padding:5px 12px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;
+  border:1.5px solid var(--border);background:var(--bg2);color:var(--text2);
+  transition:all .12s;font-family:'DM Sans',sans-serif;
+}
+.ch-toggle.on{background:var(--blue-light);border-color:var(--blue);color:var(--blue)}
+.activity-log{display:flex;flex-direction:column;gap:8px}
+.act-item{display:flex;gap:10px;align-items:flex-start}
+.act-dot{width:8px;height:8px;border-radius:50%;background:var(--blue);flex-shrink:0;margin-top:5px}
+.act-text{font-size:12px;color:var(--text2);line-height:1.5}
+.act-time{font-size:11px;color:var(--text3)}
+.add-note-row{display:flex;gap:8px;margin-top:10px}
+.note-input{flex:1;background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:8px 11px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none}
+.note-input:focus{border-color:var(--blue)}
+.panel-footer{padding:14px 20px;border-top:1.5px solid var(--border);display:flex;gap:8px}
+
+/* ── New brand modal ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,11,13,.45);z-index:100;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px)}
+.modal-overlay.open{display:flex}
+.modal{background:var(--bg);border:1.5px solid var(--border2);border-radius:var(--r-lg);padding:24px;width:100%;max-width:480px;box-shadow:var(--shadow-lg);animation:mIn .18s ease}
+@keyframes mIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+.modal-title{font-family:'Cabinet Grotesk',sans-serif;font-size:20px;font-weight:700;letter-spacing:-.02em;margin-bottom:18px}
+.modal .field-row{grid-template-columns:1fr 1fr}
+.modal-btns{display:flex;gap:8px;margin-top:18px}
+
+/* ── Toasts ── */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:var(--text);color:var(--bg);padding:10px 20px;border-radius:20px;
+  font-size:13px;font-weight:500;z-index:200;opacity:0;
+  transition:all .25s cubic-bezier(.4,0,.2,1);white-space:nowrap;
+}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+/* ── Empty ── */
+.empty-col{text-align:center;padding:24px 12px;color:var(--text3);font-size:12px;border:1.5px dashed var(--border);border-radius:var(--r);background:var(--bg2)}
+
+/* ── Template modal ── */
+.tpl-modal{max-width:640px}
+.tpl-full-body{white-space:pre-wrap;font-size:13px;line-height:1.8;color:var(--text2);background:var(--bg2);border-radius:var(--r-sm);padding:14px;border:1px solid var(--border);font-family:'DM Sans',sans-serif;max-height:340px;overflow-y:auto}
+</style>
+</head>
+<body>
+
+<!-- Topbar -->
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-icon">O</div>
+    <div class="brand-name">Outreach<span>OS</span></div>
+  </div>
+  <div class="topbar-divider"></div>
+  <div class="tab-nav">
+    <button class="tab active" onclick="switchView('pipeline',this)">Pipeline</button>
+    <button class="tab" onclick="switchView('templates',this)">Templates</button>
+  </div>
+  <div class="topbar-right">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input class="search-input" type="text" id="searchInput" placeholder="Search brands…" oninput="renderAll()"/>
+    </div>
+    <button class="btn btn-primary" onclick="openNewModal()">+ Add brand</button>
+  </div>
+</div>
+
+<!-- Stats bar -->
+<div class="statsbar" id="statsbar"></div>
+
+<!-- Pipeline view -->
+<div class="view active" id="view-pipeline">
+  <div class="kanban-wrap" id="kanbanWrap"></div>
+</div>
+
+<!-- Templates view -->
+<div class="view" id="view-templates">
+  <div class="templates-view">
+    <div class="tpl-header">
+      <div class="tpl-title">Email Templates</div>
+      <button class="btn btn-primary" onclick="openNewTplModal()">+ New template</button>
+    </div>
+    <div class="tpl-grid" id="tplGrid"></div>
+  </div>
+</div>
+
+<!-- Detail panel -->
+<div class="panel-overlay" id="panelOverlay" onclick="closePanel()"></div>
+<div class="side-panel" id="sidePanel">
+  <div class="panel-header" id="panelHeader"></div>
+  <div class="panel-body" id="panelBody"></div>
+  <div class="panel-footer">
+    <button class="btn btn-primary" style="flex:1" onclick="savePanel()">Save changes</button>
+    <button class="btn btn-ghost" onclick="deleteBrand()">Delete</button>
+  </div>
+</div>
+
+<!-- New brand modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-title">Add brand</div>
+    <div class="field-row">
+      <div class="field"><label>Brand name *</label><input type="text" id="nb-name" placeholder="e.g. Glossier" autocomplete="off"/></div>
+      <div class="field"><label>Niche</label><input type="text" id="nb-niche" placeholder="e.g. Beauty, Fashion"/></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Contact email</label><input type="email" id="nb-email" placeholder="hello@brand.com"/></div>
+      <div class="field"><label>TikTok handle</label><input type="text" id="nb-tiktok" placeholder="@brand"/></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Instagram</label><input type="text" id="nb-instagram" placeholder="@brand"/></div>
+      <div class="field"><label>Priority</label>
+        <select id="nb-priority"><option value="high">High</option><option value="medium" selected>Medium</option><option value="low">Low</option></select>
+      </div>
+    </div>
+    <div class="field"><label>Stage</label>
+      <select id="nb-stage">
+        <option value="prospecting">Prospecting</option>
+        <option value="contacted">Contacted</option>
+        <option value="replied">Replied</option>
+        <option value="intalks">In Talks</option>
+        <option value="closed">Closed</option>
+        <option value="pass">Pass</option>
+      </select>
+    </div>
+    <div class="field"><label>Notes</label><textarea id="nb-notes" rows="2" placeholder="Any initial notes…"></textarea></div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" style="flex:1" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" style="flex:1" onclick="createBrand()">Add brand</button>
+    </div>
+  </div>
+</div>
+
+<!-- Template view modal -->
+<div class="modal-overlay" id="tplModalOverlay">
+  <div class="modal tpl-modal">
+    <div class="modal-title" id="tplModalTitle">Template</div>
+    <div style="margin-bottom:10px">
+      <div style="font-size:12px;color:var(--text3);margin-bottom:4px">Subject line</div>
+      <div id="tplModalSubject" style="font-size:13px;color:var(--text2);background:var(--bg2);padding:8px 12px;border-radius:var(--r-sm);border:1px solid var(--border);font-style:italic"></div>
+    </div>
+    <div style="font-size:12px;color:var(--text3);margin-bottom:6px">Body</div>
+    <div class="tpl-full-body" id="tplModalBody"></div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" style="flex:1" onclick="closeTplModal()">Close</button>
+      <button class="btn btn-primary" style="flex:1" id="tplModalCopyBtn" onclick="copyTplFull()">Copy body</button>
+    </div>
+  </div>
+</div>
+
+<!-- New template modal -->
+<div class="modal-overlay" id="newTplModalOverlay">
+  <div class="modal tpl-modal">
+    <div class="modal-title">New template</div>
+    <div class="field"><label>Template name *</label><input type="text" id="nt-name" placeholder="e.g. First outreach — beauty brands"/></div>
+    <div class="field"><label>Subject line</label><input type="text" id="nt-subject" placeholder="Collaboration opportunity with [Brand]"/></div>
+    <div class="field"><label>Body</label><textarea id="nt-body" rows="7" placeholder="Hi [Name],&#10;&#10;I came across your brand and…"></textarea></div>
+    <div class="field-row">
+      <div class="field"><label>Channel</label>
+        <select id="nt-channel"><option>Email</option><option>TikTok DM</option><option>Instagram DM</option><option>LinkedIn</option></select>
+      </div>
+      <div class="field"><label>Tag</label><input type="text" id="nt-tag" placeholder="e.g. cold-outreach"/></div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" style="flex:1" onclick="closeNewTplModal()">Cancel</button>
+      <button class="btn btn-primary" style="flex:1" onclick="createTemplate()">Save template</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Config ──
+const STAGES = [
+  {id:'prospecting', label:'Prospecting', color:'#9ea6b4'},
+  {id:'contacted',   label:'Contacted',   color:'#1652f0'},
+  {id:'replied',     label:'Replied',     color:'#f59f00'},
+  {id:'intalks',     label:'In Talks',    color:'#7c3aed'},
+  {id:'closed',      label:'Closed',      color:'#05b169'},
+  {id:'pass',        label:'Pass',        color:'#e03030'},
+];
+const CHANNELS = ['Email','TikTok','Instagram','LinkedIn','Twitter'];
+const AVATARBGS = ['#1652f0','#7c3aed','#05b169','#e03030','#f59f00','#0891b2','#db2777','#16a34a'];
+function avatarBg(name){ let h=0; for(let c of name) h=(h*31+c.charCodeAt(0))%AVATARBGS.length; return AVATARBGS[h]; }
+function initials(name){ return name.split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2)||'?'; }
+
+// ── State ──
+let state = load();
+let editingId = null;
+let currentTplId = null;
+
+function load(){
+  try{ const r=localStorage.getItem('outreachos_v1'); if(r) return JSON.parse(r); }catch(e){}
+  return { brands: defaultBrands(), templates: defaultTemplates() };
+}
+function save(){ localStorage.setItem('outreachos_v1', JSON.stringify(state)); }
+
+function defaultBrands(){
+  const d = (days) => { const dt=new Date(); dt.setDate(dt.getDate()-days); return dt.toISOString(); };
+  return [
+    {id:1,name:'Glossier',niche:'Beauty',email:'collab@glossier.com',tiktok:'@glossier',instagram:'@glossier',linkedin:'',twitter:'',priority:'high',stage:'intalks',notes:'They replied! Interested in a TikTok campaign for Q3.',channels:['Email','TikTok','Instagram'],activity:[{text:'Sent follow-up email',time:d(1)},{text:'Initial email sent',time:d(5)}],createdAt:d(5)},
+    {id:2,name:'Rhode Skin',niche:'Skincare',email:'partnerships@rhode.com',tiktok:'@rhode',instagram:'@rhodesk',linkedin:'',twitter:'',priority:'high',stage:'contacted',notes:'Sent initial pitch. Waiting for reply.',channels:['Email','Instagram'],activity:[{text:'DM sent on Instagram',time:d(2)},{text:'Email sent',time:d(3)}],createdAt:d(3)},
+    {id:3,name:'Gymshark',niche:'Fitness',email:'',tiktok:'@gymshark',instagram:'@gymshark',linkedin:'',twitter:'',priority:'medium',stage:'prospecting',notes:'Large audience, fitness niche. Research their collab rates.',channels:['TikTok','Instagram'],activity:[],createdAt:d(1)},
+    {id:4,name:'Notion',niche:'Productivity / SaaS',email:'partnerships@notion.so',tiktok:'',instagram:'',linkedin:'notion',twitter:'',priority:'medium',stage:'prospecting',notes:'Good fit for productivity content.',channels:['Email','LinkedIn'],activity:[],createdAt:d(0)},
+    {id:5,name:'Dyson',niche:'Tech / Home',email:'media@dyson.com',tiktok:'@dyson',instagram:'@dyson',linkedin:'',twitter:'',priority:'low',stage:'replied',notes:'Replied saying they\'ll review our media kit. Sent deck.',channels:['Email'],activity:[{text:'Media kit sent',time:d(1)},{text:'Replied to our email',time:d(2)},{text:'Email sent',time:d(4)}],createdAt:d(4)},
+    {id:6,name:'Lululemon',niche:'Fashion / Fitness',email:'',tiktok:'@lululemon',instagram:'@lululemon',linkedin:'',twitter:'',priority:'medium',stage:'closed',notes:'Signed! 3-post TikTok deal for Ramadan collection.',channels:['Email','TikTok'],activity:[{text:'Deal signed 🎉',time:d(0)},{text:'Negotiated terms',time:d(3)},{text:'In talks',time:d(7)}],createdAt:d(14)},
+    {id:7,name:'Zara',niche:'Fashion',email:'',tiktok:'',instagram:'',linkedin:'',twitter:'',priority:'low',stage:'pass',notes:'Not the right fit for our audience right now.',channels:[],activity:[{text:'Marked as pass',time:d(2)}],createdAt:d(8)},
+  ];
+}
+
+function defaultTemplates(){
+  return [
+    {id:1,name:'Cold outreach — beauty / fashion',subject:'Quick collab idea for [Brand] 🤝',channel:'Email',tag:'cold-outreach',
+     body:`Hi [Name],\n\nI hope this finds you well! I'm reaching out on behalf of [Agency Name], a UAE-based marketing agency helping brands grow their presence across TikTok and Instagram.\n\nI've been following [Brand] for a while and genuinely love what you're doing with [specific product/campaign]. I think your brand would resonate really well with our creator network's audience — predominantly 18-34, highly engaged, and passionate about [niche].\n\nI'd love to explore a potential collaboration — whether that's a product campaign, affiliate deal, or something more custom.\n\nWould you be open to a quick 15-min call this week?\n\nBest,\n[Your Name]\n[Agency Name] | [Website]`},
+    {id:2,name:'Follow-up (no reply)',subject:'Re: Quick collab idea for [Brand]',channel:'Email',tag:'follow-up',
+     body:`Hi [Name],\n\nJust wanted to follow up on my previous email in case it got buried!\n\nI'm still really excited about the potential to collaborate with [Brand]. We've recently worked with [similar brand] and helped them achieve [result — e.g. 2M+ views in one week].\n\nHappy to send over our media kit or jump on a call — whatever works best for you.\n\nLooking forward to hearing from you!\n\n[Your Name]`},
+    {id:3,name:'TikTok DM outreach',subject:'',channel:'TikTok DM',tag:'dm-outreach',
+     body:`Hey [Brand]! 👋\n\nLove what you've been putting out lately — especially [recent video/product].\n\nI work with a marketing agency and we'd love to explore a collab with your brand. We have creators with highly engaged audiences in [niche] and think there could be a great fit.\n\nWould you be open to chatting? I can send over more details! 🙌`},
+    {id:4,name:'Media kit follow-up',subject:'[Agency Name] — Media Kit for [Brand]',channel:'Email',tag:'media-kit',
+     body:`Hi [Name],\n\nThank you for your interest! As promised, please find our media kit attached.\n\nHighlights:\n• Average engagement rate: [X]%\n• Monthly reach: [X] across TikTok + Instagram\n• Past brand partners: [Brand 1], [Brand 2], [Brand 3]\n• Niches: Beauty, Fashion, Lifestyle, Tech\n\nOur packages start from [price range] and are fully customizable based on your goals.\n\nHappy to hop on a call to walk you through everything. What does your schedule look like this week?\n\nBest,\n[Your Name]`},
+  ];
+}
+
+// ── Views ──
+function switchView(view, tab){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('view-'+view).classList.add('active');
+  tab.classList.add('active');
+  if(view==='templates') renderTemplates();
+}
+
+// ── Stats ──
+function renderStats(){
+  const brands = state.brands;
+  const closed = brands.filter(b=>b.stage==='closed').length;
+  const active = brands.filter(b=>!['pass','closed'].includes(b.stage)).length;
+  const replied = brands.filter(b=>['replied','intalks','closed'].includes(b.stage)).length;
+  const rate = brands.length ? Math.round(replied/brands.length*100) : 0;
+  document.getElementById('statsbar').innerHTML = `
+    <div class="stat"><div class="stat-val">${brands.length}</div><div class="stat-lbl">Total brands</div></div>
+    <div class="stat-divider"></div>
+    <div class="stat"><div class="stat-val" style="color:var(--blue)">${active}</div><div class="stat-lbl">Active</div></div>
+    <div class="stat-divider"></div>
+    <div class="stat"><div class="stat-val" style="color:var(--amber)">${replied}</div><div class="stat-lbl">Replied / in talks</div></div>
+    <div class="stat-divider"></div>
+    <div class="stat"><div class="stat-val" style="color:var(--green)">${closed}</div><div class="stat-lbl">Closed deals</div></div>
+    <div class="stat-divider"></div>
+    <div class="stat"><div class="stat-val">${rate}%</div><div class="stat-lbl">Reply rate</div></div>
+  `;
+}
+
+// ── Kanban ──
+function renderKanban(){
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const wrap = document.getElementById('kanbanWrap');
+  wrap.innerHTML = '';
+  STAGES.forEach(stage=>{
+    let brands = state.brands.filter(b=>b.stage===stage.id);
+    if(q) brands = brands.filter(b=>b.name.toLowerCase().includes(q)||b.niche.toLowerCase().includes(q)||(b.notes||'').toLowerCase().includes(q));
+    const col = document.createElement('div');
+    col.className = 'column';
+    col.innerHTML = `
+      <div class="col-header">
+        <div class="col-title"><span class="col-dot" style="background:${stage.color}"></span>${stage.label}</div>
+        <span class="col-count">${brands.length}</span>
+      </div>
+      <div class="col-body" id="col-${stage.id}"></div>
+      <button class="add-card-btn" onclick="openNewModalStage('${stage.id}')">+ Add</button>
+    `;
+    wrap.appendChild(col);
+    const body = document.getElementById('col-'+stage.id);
+    if(!brands.length){
+      body.innerHTML = `<div class="empty-col">No brands here</div>`;
+    } else {
+      brands.forEach(b=>{
+        const card = document.createElement('div');
+        card.className = 'brand-card';
+        const chHtml = (b.channels||[]).map(c=>`<span class="bc-ch ch-${c.toLowerCase()}">${c}</span>`).join('');
+        const date = b.createdAt ? new Date(b.createdAt).toLocaleDateString('en-GB',{day:'numeric',month:'short'}) : '';
+        card.innerHTML = `
+          <div class="bc-top">
+            <div><div class="bc-name">${esc(b.name)}</div><div class="bc-niche">${esc(b.niche||'')}</div></div>
+            <div class="bc-avatar" style="background:${avatarBg(b.name)}">${initials(b.name)}</div>
+          </div>
+          ${chHtml?`<div class="bc-channels">${chHtml}</div>`:''}
+          <div class="bc-footer">
+            <span class="bc-date">${date}</span>
+            <span class="bc-priority pri-${b.priority||'medium'}">${(b.priority||'medium').charAt(0).toUpperCase()+(b.priority||'medium').slice(1)}</span>
+          </div>
+        `;
+        card.onclick = ()=>openPanel(b.id);
+        body.appendChild(card);
+      });
+    }
+  });
+}
+
+function renderAll(){ renderStats(); renderKanban(); }
+
+// ── Panel ──
+function openPanel(id){
+  const b = state.brands.find(x=>x.id===id);
+  if(!b) return;
+  editingId = id;
+  const bg = avatarBg(b.name);
+
+  document.getElementById('panelHeader').innerHTML = `
+    <div class="panel-avatar" style="background:${bg}">${initials(b.name)}</div>
+    <div><div class="panel-brand-name">${esc(b.name)}</div><div class="panel-niche">${esc(b.niche||'No niche')}</div></div>
+    <button class="panel-close" onclick="closePanel()">✕</button>
+  `;
+
+  const stagePills = STAGES.map(s=>`<button class="stage-pill${b.stage===s.id?' active':''}" style="${b.stage===s.id?`background:${s.color}20;border-color:${s.color};color:${s.color}`:''}" onclick="setStage('${s.id}')">${s.label}</button>`).join('');
+  const chToggles = CHANNELS.map(c=>`<button class="ch-toggle${(b.channels||[]).includes(c)?' on':''}" onclick="toggleChannel('${c}')">${c}</button>`).join('');
+  const actHtml = (b.activity||[]).map(a=>`<div class="act-item"><div class="act-dot"></div><div><div class="act-text">${esc(a.text)}</div><div class="act-time">${new Date(a.time).toLocaleDateString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</div></div></div>`).join('') || '<div style="font-size:12px;color:var(--text3)">No activity yet</div>';
+
+  document.getElementById('panelBody').innerHTML = `
+    <div class="panel-section">
+      <div class="ps-label">Stage</div>
+      <div class="stage-pills" id="stagePills">${stagePills}</div>
+    </div>
+    <div class="panel-section">
+      <div class="ps-label">Channels</div>
+      <div class="channel-toggles" id="chToggles">${chToggles}</div>
+    </div>
+    <div class="panel-section">
+      <div class="ps-label">Contact info</div>
+      <div class="field-row">
+        <div class="field"><label>Email</label><input id="pf-email" value="${esc(b.email||'')}" placeholder="hello@brand.com"/></div>
+        <div class="field"><label>TikTok</label><input id="pf-tiktok" value="${esc(b.tiktok||'')}" placeholder="@brand"/></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Instagram</label><input id="pf-instagram" value="${esc(b.instagram||'')}" placeholder="@brand"/></div>
+        <div class="field"><label>LinkedIn</label><input id="pf-linkedin" value="${esc(b.linkedin||'')}" placeholder="company/brand"/></div>
+      </div>
+    </div>
+    <div class="panel-section">
+      <div class="ps-label">Notes</div>
+      <div class="field"><textarea id="pf-notes" rows="3">${esc(b.notes||'')}</textarea></div>
+    </div>
+    <div class="panel-section">
+      <div class="ps-label">Activity</div>
+      <div class="activity-log">${actHtml}</div>
+      <div class="add-note-row">
+        <input class="note-input" id="actInput" placeholder="Log an activity…" onkeydown="if(event.key==='Enter')logActivity()"/>
+        <button class="btn btn-primary" onclick="logActivity()">Log</button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('panelOverlay').classList.add('open');
+  document.getElementById('sidePanel').classList.add('open');
+}
+
+function closePanel(){
+  document.getElementById('panelOverlay').classList.remove('open');
+  document.getElementById('sidePanel').classList.remove('open');
+  editingId = null;
+}
+
+function setStage(stageId){
+  const b = state.brands.find(x=>x.id===editingId);
+  if(!b) return;
+  b.stage = stageId;
+  const s = STAGES.find(x=>x.id===stageId);
+  document.querySelectorAll('.stage-pill').forEach(p=>{
+    const isActive = p.textContent.trim()===s.label;
+    p.className='stage-pill'+(isActive?' active':'');
+    p.style = isActive?`background:${s.color}20;border-color:${s.color};color:${s.color}`:'';
+  });
+  save(); renderAll();
+}
+
+function toggleChannel(ch){
+  const b = state.brands.find(x=>x.id===editingId);
+  if(!b) return;
+  if(!b.channels) b.channels=[];
+  if(b.channels.includes(ch)) b.channels=b.channels.filter(c=>c!==ch);
+  else b.channels.push(ch);
+  document.querySelectorAll('.ch-toggle').forEach(t=>{
+    if(t.textContent===ch) t.classList.toggle('on', b.channels.includes(ch));
+  });
+  save();
+}
+
+function logActivity(){
+  const input = document.getElementById('actInput');
+  const text = (input.value||'').trim();
+  if(!text) return;
+  const b = state.brands.find(x=>x.id===editingId);
+  if(!b) return;
+  if(!b.activity) b.activity=[];
+  b.activity.unshift({text, time:new Date().toISOString()});
+  save();
+  input.value='';
+  openPanel(editingId);
+}
+
+function savePanel(){
+  const b = state.brands.find(x=>x.id===editingId);
+  if(!b) return;
+  const g = id=>{ const el=document.getElementById(id); return el?el.value:''; };
+  b.email=g('pf-email'); b.tiktok=g('pf-tiktok'); b.instagram=g('pf-instagram'); b.linkedin=g('pf-linkedin'); b.notes=g('pf-notes');
+  save(); renderAll(); closePanel(); toast('Saved ✓');
+}
+
+function deleteBrand(){
+  if(!confirm('Delete this brand?')) return;
+  state.brands = state.brands.filter(x=>x.id!==editingId);
+  save(); renderAll(); closePanel();
+}
+
+// ── New brand modal ──
+function openNewModal(){ document.getElementById('modalOverlay').classList.add('open'); setTimeout(()=>document.getElementById('nb-name').focus(),50); }
+function openNewModalStage(stage){ openNewModal(); document.getElementById('nb-stage').value=stage; }
+function closeModal(){ document.getElementById('modalOverlay').classList.remove('open'); }
+function createBrand(){
+  const name=(document.getElementById('nb-name').value||'').trim();
+  if(!name){ document.getElementById('nb-name').focus(); return; }
+  const b = {
+    id:Date.now(), name,
+    niche:document.getElementById('nb-niche').value,
+    email:document.getElementById('nb-email').value,
+    tiktok:document.getElementById('nb-tiktok').value,
+    instagram:document.getElementById('nb-instagram').value,
+    linkedin:'', twitter:'',
+    priority:document.getElementById('nb-priority').value,
+    stage:document.getElementById('nb-stage').value,
+    notes:document.getElementById('nb-notes').value,
+    channels:[], activity:[], createdAt:new Date().toISOString(),
+  };
+  if(b.email) b.channels.push('Email');
+  if(b.tiktok) b.channels.push('TikTok');
+  if(b.instagram) b.channels.push('Instagram');
+  state.brands.push(b);
+  save(); renderAll(); closeModal();
+  ['nb-name','nb-niche','nb-email','nb-tiktok','nb-instagram','nb-notes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  toast('Brand added ✓');
+}
+
+// ── Templates ──
+function renderTemplates(){
+  const grid = document.getElementById('tplGrid');
+  grid.innerHTML='';
+  state.templates.forEach(t=>{
+    const card = document.createElement('div');
+    card.className='tpl-card';
+    const iconBg = t.channel==='Email'?'var(--blue-light)':t.channel==='TikTok DM'?'var(--purple-bg)':t.channel==='Instagram DM'?'#fff0f8':'var(--bg3)';
+    const iconColor = t.channel==='Email'?'var(--blue)':t.channel==='TikTok DM'?'var(--purple-text)':t.channel==='Instagram DM'?'#c0186a':'var(--text2)';
+    const icon = t.channel==='Email'?'✉️':t.channel==='TikTok DM'?'📱':t.channel==='Instagram DM'?'📸':'💬';
+    card.innerHTML=`
+      <div class="tpl-card-header">
+        <div class="tpl-icon" style="background:${iconBg};color:${iconColor};font-size:16px">${icon}</div>
+        <div class="tpl-meta"><div class="tpl-name">${esc(t.name)}</div><div class="tpl-type">${esc(t.channel)}</div></div>
+      </div>
+      ${t.subject?`<div class="tpl-subject">${esc(t.subject)}</div>`:''}
+      <div class="tpl-preview">${esc(t.body)}</div>
+      <div class="tpl-footer">
+        <span class="tpl-tag">${esc(t.tag||t.channel)}</span>
+        <button class="copy-btn" id="copybtn-${t.id}" onclick="copyTemplate(${t.id},event)">Copy</button>
+      </div>
+    `;
+    card.onclick=e=>{ if(!e.target.classList.contains('copy-btn')) openTplModal(t.id); };
+    grid.appendChild(card);
+  });
+}
+
+function copyTemplate(id, e){
+  e.stopPropagation();
+  const t = state.templates.find(x=>x.id===id);
+  if(!t) return;
+  navigator.clipboard.writeText(t.body).then(()=>{
+    const btn=document.getElementById('copybtn-'+id);
+    if(btn){ btn.textContent='Copied!'; btn.classList.add('copied'); setTimeout(()=>{ btn.textContent='Copy'; btn.classList.remove('copied'); },2000); }
+  });
+}
+
+function openTplModal(id){
+  currentTplId = id;
+  const t = state.templates.find(x=>x.id===id);
+  if(!t) return;
+  document.getElementById('tplModalTitle').textContent = t.name;
+  document.getElementById('tplModalSubject').textContent = t.subject||'(No subject — DM template)';
+  document.getElementById('tplModalBody').textContent = t.body;
+  document.getElementById('tplModalOverlay').classList.add('open');
+}
+function closeTplModal(){ document.getElementById('tplModalOverlay').classList.remove('open'); }
+function copyTplFull(){
+  const t = state.templates.find(x=>x.id===currentTplId);
+  if(!t) return;
+  navigator.clipboard.writeText(t.body).then(()=>{
+    const btn=document.getElementById('tplModalCopyBtn');
+    btn.textContent='Copied!'; setTimeout(()=>btn.textContent='Copy body',2000);
+  });
+}
+
+function openNewTplModal(){ document.getElementById('newTplModalOverlay').classList.add('open'); setTimeout(()=>document.getElementById('nt-name').focus(),50); }
+function closeNewTplModal(){ document.getElementById('newTplModalOverlay').classList.remove('open'); }
+function createTemplate(){
+  const name=(document.getElementById('nt-name').value||'').trim();
+  if(!name){ document.getElementById('nt-name').focus(); return; }
+  const t = {
+    id:Date.now(), name,
+    subject:document.getElementById('nt-subject').value,
+    body:document.getElementById('nt-body').value,
+    channel:document.getElementById('nt-channel').value,
+    tag:document.getElementById('nt-tag').value||'custom',
+  };
+  state.templates.push(t);
+  save(); closeNewTplModal(); renderTemplates(); toast('Template saved ✓');
+  ['nt-name','nt-subject','nt-body','nt-tag'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+}
+
+// ── Toast ──
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),2200);
+}
+
+// ── Utils ──
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ── Keyboard ──
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){ closePanel(); closeModal(); closeTplModal(); closeNewTplModal(); }
+  if(e.key==='Enter'&&document.getElementById('modalOverlay').classList.contains('open')&&document.activeElement.tagName!=='TEXTAREA'){ e.preventDefault(); createBrand(); }
+  if(e.key==='Enter'&&document.getElementById('newTplModalOverlay').classList.contains('open')&&document.activeElement.tagName!=='TEXTAREA'){ e.preventDefault(); createTemplate(); }
+});
+[document.getElementById('modalOverlay'),document.getElementById('tplModalOverlay'),document.getElementById('newTplModalOverlay')].forEach(o=>{ if(o) o.addEventListener('click',e=>{ if(e.target===o){ closeModal(); closeTplModal(); closeNewTplModal(); }}); });
+
+// ── Init ──
+renderAll();
+</script>
+</body>
+</html>
