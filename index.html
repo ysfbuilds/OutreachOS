@@ -293,6 +293,25 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
   padding:2px 6px;border-radius:5px;transition:all .12s;line-height:1;
 }
 .msg-item-del:hover{background:var(--red-bg);color:var(--red)}
+.msg-item-edit{
+  background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px;
+  padding:2px 6px;border-radius:5px;transition:all .12s;line-height:1;
+}
+.msg-item-edit:hover{background:var(--blue-light);color:var(--blue)}
+.msg-edit-body{
+  width:100%;background:var(--bg2);border:1.5px solid var(--blue);border-radius:var(--r-sm);
+  padding:10px 12px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;
+  outline:none;resize:vertical;min-height:64px;line-height:1.6;margin-top:6px;
+}
+.msg-edit-actions{display:flex;gap:6px;margin-top:8px;justify-content:flex-end}
+.msg-edit-save{
+  font-size:11px;padding:5px 12px;border-radius:6px;border:none;background:var(--blue);
+  color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;
+}
+.msg-edit-cancel{
+  font-size:11px;padding:5px 12px;border-radius:6px;border:1.5px solid var(--border);
+  background:none;color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;
+}
 .msg-item-body{font-size:13px;color:var(--text);line-height:1.6;white-space:pre-wrap;word-break:break-word}
 .msg-empty{text-align:center;padding:32px 16px;color:var(--text3);font-size:12.5px}
 .msg-empty-icon{font-size:24px;margin-bottom:8px;opacity:.5}
@@ -721,15 +740,71 @@ function renderMessagesPane(b){
 
 function messageItemHTML(m){
   const time = new Date(m.time).toLocaleDateString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
-  return `<div class="msg-item ${m.direction}">
+  return `<div class="msg-item ${m.direction}" id="msg-${m.id}">
     <div class="msg-item-header">
       <span class="msg-dir-badge ${m.direction}">${m.direction === 'sent' ? 'Sent' : 'Received'}</span>
       <span class="msg-channel-badge">${esc(m.channel)}</span>
       <span class="msg-item-time">${time}</span>
+      <button class="msg-item-edit" onclick="editMessage(${m.id})" title="Edit message">Edit</button>
       <button class="msg-item-del" onclick="deleteMessage(${m.id})" title="Delete message">✕</button>
     </div>
-    <div class="msg-item-body">${esc(m.body)}</div>
+    <div class="msg-item-body" id="msg-body-${m.id}">${esc(m.body)}</div>
   </div>`;
+}
+
+function editMessage(msgId){
+  const b = state.brands.find(x=>x.id===editingId);
+  if(!b) return;
+  const m = (b.messages||[]).find(x=>x.id===msgId);
+  if(!m) return;
+  const bodyEl = document.getElementById('msg-body-'+msgId);
+  if(!bodyEl) return;
+  bodyEl.outerHTML = `
+    <div id="msg-body-${msgId}">
+      <select class="msg-channel-select" id="msg-edit-channel-${msgId}" style="margin-bottom:6px;width:auto;display:inline-block">
+        ${MSG_CHANNELS.map(c=>`<option value="${c}"${c===m.channel?' selected':''}>${c}</option>`).join('')}
+      </select>
+      <div class="msg-dir-toggle" style="display:inline-flex;margin-left:6px;vertical-align:middle">
+        <button class="msg-dir-btn sent${m.direction==='sent'?' active':''}" onclick="setEditDirection(${msgId},'sent',this)" type="button">Sent</button>
+        <button class="msg-dir-btn received${m.direction==='received'?' active':''}" onclick="setEditDirection(${msgId},'received',this)" type="button">Received</button>
+      </div>
+      <textarea class="msg-edit-body" id="msg-edit-input-${msgId}">${esc(m.body)}</textarea>
+      <div class="msg-edit-actions">
+        <button class="msg-edit-cancel" onclick="cancelEditMessage(${msgId})">Cancel</button>
+        <button class="msg-edit-save" onclick="saveEditMessage(${msgId})">Save</button>
+      </div>
+    </div>`;
+  document.getElementById('msg-edit-input-'+msgId).focus();
+}
+
+let editMsgDirection = {};
+function setEditDirection(msgId, dir, btn){
+  editMsgDirection[msgId] = dir;
+  const toggle = btn.parentElement;
+  toggle.querySelectorAll('.msg-dir-btn').forEach(b=>b.classList.toggle('active', b.classList.contains(dir)));
+}
+
+function cancelEditMessage(msgId){
+  const b = state.brands.find(x=>x.id===editingId);
+  if(!b) return;
+  renderMessagesPane(b);
+}
+
+function saveEditMessage(msgId){
+  const b = state.brands.find(x=>x.id===editingId);
+  if(!b) return;
+  const m = (b.messages||[]).find(x=>x.id===msgId);
+  if(!m) return;
+  const newBody = (document.getElementById('msg-edit-input-'+msgId).value||'').trim();
+  if(!newBody) return;
+  const channelSel = document.getElementById('msg-edit-channel-'+msgId);
+  m.body = newBody;
+  m.channel = channelSel ? channelSel.value : m.channel;
+  m.direction = editMsgDirection[msgId] || m.direction;
+  delete editMsgDirection[msgId];
+  save();
+  renderMessagesPane(b);
+  toast('Message updated ✓');
 }
 
 function setMsgDirection(dir){
