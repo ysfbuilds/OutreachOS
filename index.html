@@ -134,6 +134,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 }
 .bc-footer{display:flex;align-items:center;justify-content:space-between}
 .bc-date{font-size:11px;color:var(--text3)}
+.bc-msgcount{font-size:11px;color:var(--text3);display:flex;align-items:center;gap:3px}
 .bc-priority{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600}
 .pri-high{background:var(--red-bg);color:var(--red-text)}
 .pri-medium{background:var(--amber-bg);color:var(--amber-text)}
@@ -178,7 +179,7 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 .panel-overlay{display:none;position:fixed;inset:0;background:rgba(10,11,13,.35);z-index:50;backdrop-filter:blur(3px)}
 .panel-overlay.open{display:block}
 .side-panel{
-  position:fixed;top:0;right:0;bottom:0;width:520px;max-width:96vw;
+  position:fixed;top:0;right:0;bottom:0;width:560px;max-width:96vw;
   background:var(--bg);border-left:1.5px solid var(--border);
   display:flex;flex-direction:column;z-index:51;
   transform:translateX(100%);transition:transform .22s cubic-bezier(.4,0,.2,1);
@@ -194,9 +195,24 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 .panel-niche{font-size:12px;color:var(--text3)}
 .panel-close{margin-left:auto;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:7px;cursor:pointer;border:none;background:none;color:var(--text2);font-size:18px;transition:background .12s}
 .panel-close:hover{background:var(--bg3)}
+
+/* panel sub-tabs */
+.panel-tabs{display:flex;gap:2px;padding:10px 20px 0;border-bottom:1.5px solid var(--border)}
+.panel-tab{
+  padding:8px 14px;font-size:12.5px;font-weight:600;color:var(--text3);cursor:pointer;
+  border:none;background:none;font-family:'DM Sans',sans-serif;border-bottom:2px solid transparent;
+  margin-bottom:-1.5px;transition:all .15s;display:flex;align-items:center;gap:6px;
+}
+.panel-tab:hover{color:var(--text2)}
+.panel-tab.active{color:var(--blue);border-bottom-color:var(--blue)}
+.panel-tab-count{font-size:10px;background:var(--bg3);color:var(--text3);padding:1px 6px;border-radius:8px;font-weight:600}
+.panel-tab.active .panel-tab-count{background:var(--blue-light);color:var(--blue)}
+
 .panel-body{flex:1;overflow-y:auto;padding:20px}
 .panel-body::-webkit-scrollbar{width:5px}
 .panel-body::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+.panel-pane{display:none}
+.panel-pane.active{display:block}
 .panel-section{margin-bottom:20px}
 .ps-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin-bottom:7px}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -232,6 +248,54 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 .note-input{flex:1;background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:8px 11px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none}
 .note-input:focus{border-color:var(--blue)}
 .panel-footer{padding:14px 20px;border-top:1.5px solid var(--border);display:flex;gap:8px}
+
+/* ── Message log ── */
+.msg-composer{
+  background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--r);
+  padding:14px;margin-bottom:18px;
+}
+.msg-composer-row{display:flex;gap:8px;margin-bottom:10px}
+.msg-dir-toggle{display:flex;border:1.5px solid var(--border);border-radius:var(--r-sm);overflow:hidden;flex-shrink:0}
+.msg-dir-btn{
+  padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;border:none;
+  background:var(--bg);color:var(--text3);font-family:'DM Sans',sans-serif;transition:all .12s;
+}
+.msg-dir-btn.active.sent{background:var(--blue);color:#fff}
+.msg-dir-btn.active.received{background:var(--green);color:#fff}
+.msg-channel-select{
+  flex:1;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r-sm);
+  padding:8px 11px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;
+}
+.msg-channel-select:focus{border-color:var(--blue)}
+.msg-body-input{
+  width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r-sm);
+  padding:10px 12px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;
+  outline:none;resize:vertical;min-height:64px;line-height:1.6;margin-bottom:10px;transition:border-color .15s;
+}
+.msg-body-input:focus{border-color:var(--blue)}
+.msg-composer-footer{display:flex;justify-content:flex-end}
+
+.msg-list{display:flex;flex-direction:column;gap:10px}
+.msg-item{
+  border:1.5px solid var(--border);border-radius:var(--r);padding:12px 14px;position:relative;
+  animation:cardIn .15s ease;
+}
+.msg-item.sent{border-left:3px solid var(--blue)}
+.msg-item.received{border-left:3px solid var(--green)}
+.msg-item-header{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.msg-dir-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px;text-transform:uppercase;letter-spacing:.03em}
+.msg-dir-badge.sent{background:var(--blue-light);color:var(--blue)}
+.msg-dir-badge.received{background:var(--green-bg);color:var(--green-text)}
+.msg-channel-badge{font-size:11px;color:var(--text2);font-weight:500;display:flex;align-items:center;gap:4px}
+.msg-item-time{font-size:11px;color:var(--text3);margin-left:auto}
+.msg-item-del{
+  background:none;border:none;color:var(--text3);cursor:pointer;font-size:13px;
+  padding:2px 6px;border-radius:5px;transition:all .12s;line-height:1;
+}
+.msg-item-del:hover{background:var(--red-bg);color:var(--red)}
+.msg-item-body{font-size:13px;color:var(--text);line-height:1.6;white-space:pre-wrap;word-break:break-word}
+.msg-empty{text-align:center;padding:32px 16px;color:var(--text3);font-size:12.5px}
+.msg-empty-icon{font-size:24px;margin-bottom:8px;opacity:.5}
 
 /* ── New brand modal ── */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,11,13,.45);z-index:100;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px)}
@@ -304,7 +368,16 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 <div class="panel-overlay" id="panelOverlay" onclick="closePanel()"></div>
 <div class="side-panel" id="sidePanel">
   <div class="panel-header" id="panelHeader"></div>
-  <div class="panel-body" id="panelBody"></div>
+  <div class="panel-tabs" id="panelTabs">
+    <button class="panel-tab active" id="ptab-overview" onclick="switchPanelTab('overview')">Overview</button>
+    <button class="panel-tab" id="ptab-messages" onclick="switchPanelTab('messages')">Messages <span class="panel-tab-count" id="msgCountBadge">0</span></button>
+    <button class="panel-tab" id="ptab-activity" onclick="switchPanelTab('activity')">Activity</button>
+  </div>
+  <div class="panel-body">
+    <div class="panel-pane active" id="pane-overview"></div>
+    <div class="panel-pane" id="pane-messages"></div>
+    <div class="panel-pane" id="pane-activity"></div>
+  </div>
   <div class="panel-footer">
     <button class="btn btn-primary" style="flex:1" onclick="savePanel()">Save changes</button>
     <button class="btn btn-ghost" onclick="deleteBrand()">Delete</button>
@@ -398,6 +471,7 @@ const STAGES = [
   {id:'pass',        label:'Pass',        color:'#e03030'},
 ];
 const CHANNELS = ['Email','TikTok','Instagram','LinkedIn','Twitter'];
+const MSG_CHANNELS = ['Email','TikTok DM','Instagram DM','LinkedIn','Twitter DM','Phone call','Other'];
 const AVATARBGS = ['#1652f0','#7c3aed','#05b169','#e03030','#f59f00','#0891b2','#db2777','#16a34a'];
 function avatarBg(name){ let h=0; for(let c of name) h=(h*31+c.charCodeAt(0))%AVATARBGS.length; return AVATARBGS[h]; }
 function initials(name){ return name.split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2)||'?'; }
@@ -406,6 +480,8 @@ function initials(name){ return name.split(' ').map(w=>w[0]||'').join('').toUppe
 let state = load();
 let editingId = null;
 let currentTplId = null;
+let currentPanelTab = 'overview';
+let msgDirection = 'sent';
 
 function load(){
   try{ const r=localStorage.getItem('outreachos_v1'); if(r) return JSON.parse(r); }catch(e){}
@@ -416,13 +492,24 @@ function save(){ localStorage.setItem('outreachos_v1', JSON.stringify(state)); }
 function defaultBrands(){
   const d = (days) => { const dt=new Date(); dt.setDate(dt.getDate()-days); return dt.toISOString(); };
   return [
-    {id:1,name:'Glossier',niche:'Beauty',email:'collab@glossier.com',tiktok:'@glossier',instagram:'@glossier',linkedin:'',twitter:'',priority:'high',stage:'intalks',notes:'They replied! Interested in a TikTok campaign for Q3.',channels:['Email','TikTok','Instagram'],activity:[{text:'Sent follow-up email',time:d(1)},{text:'Initial email sent',time:d(5)}],createdAt:d(5)},
-    {id:2,name:'Rhode Skin',niche:'Skincare',email:'partnerships@rhode.com',tiktok:'@rhode',instagram:'@rhodesk',linkedin:'',twitter:'',priority:'high',stage:'contacted',notes:'Sent initial pitch. Waiting for reply.',channels:['Email','Instagram'],activity:[{text:'DM sent on Instagram',time:d(2)},{text:'Email sent',time:d(3)}],createdAt:d(3)},
-    {id:3,name:'Gymshark',niche:'Fitness',email:'',tiktok:'@gymshark',instagram:'@gymshark',linkedin:'',twitter:'',priority:'medium',stage:'prospecting',notes:'Large audience, fitness niche. Research their collab rates.',channels:['TikTok','Instagram'],activity:[],createdAt:d(1)},
-    {id:4,name:'Notion',niche:'Productivity / SaaS',email:'partnerships@notion.so',tiktok:'',instagram:'',linkedin:'notion',twitter:'',priority:'medium',stage:'prospecting',notes:'Good fit for productivity content.',channels:['Email','LinkedIn'],activity:[],createdAt:d(0)},
-    {id:5,name:'Dyson',niche:'Tech / Home',email:'media@dyson.com',tiktok:'@dyson',instagram:'@dyson',linkedin:'',twitter:'',priority:'low',stage:'replied',notes:'Replied saying they\'ll review our media kit. Sent deck.',channels:['Email'],activity:[{text:'Media kit sent',time:d(1)},{text:'Replied to our email',time:d(2)},{text:'Email sent',time:d(4)}],createdAt:d(4)},
-    {id:6,name:'Lululemon',niche:'Fashion / Fitness',email:'',tiktok:'@lululemon',instagram:'@lululemon',linkedin:'',twitter:'',priority:'medium',stage:'closed',notes:'Signed! 3-post TikTok deal for Ramadan collection.',channels:['Email','TikTok'],activity:[{text:'Deal signed 🎉',time:d(0)},{text:'Negotiated terms',time:d(3)},{text:'In talks',time:d(7)}],createdAt:d(14)},
-    {id:7,name:'Zara',niche:'Fashion',email:'',tiktok:'',instagram:'',linkedin:'',twitter:'',priority:'low',stage:'pass',notes:'Not the right fit for our audience right now.',channels:[],activity:[{text:'Marked as pass',time:d(2)}],createdAt:d(8)},
+    {id:1,name:'Glossier',niche:'Beauty',email:'collab@glossier.com',tiktok:'@glossier',instagram:'@glossier',linkedin:'',twitter:'',priority:'high',stage:'intalks',notes:'They replied! Interested in a TikTok campaign for Q3.',channels:['Email','TikTok','Instagram'],activity:[{text:'Sent follow-up email',time:d(1)},{text:'Initial email sent',time:d(5)}],messages:[
+      {id:101,direction:'sent',channel:'Email',body:'Hi! I hope this finds you well. I wanted to reach out about a potential TikTok campaign collaboration for Q3. We work with several beauty brands and think your products would resonate really well with our creator network.',time:d(5)},
+      {id:102,direction:'received',channel:'Email',body:'Thanks for reaching out! This sounds interesting. Can you share more details about your creator network and past results?',time:d(3)},
+      {id:103,direction:'sent',channel:'Email',body:'Absolutely — sending over our media kit now with audience demographics and past campaign performance. Let me know if you have any questions!',time:d(1)},
+    ],createdAt:d(5)},
+    {id:2,name:'Rhode Skin',niche:'Skincare',email:'partnerships@rhode.com',tiktok:'@rhode',instagram:'@rhodesk',linkedin:'',twitter:'',priority:'high',stage:'contacted',notes:'Sent initial pitch. Waiting for reply.',channels:['Email','Instagram'],activity:[{text:'DM sent on Instagram',time:d(2)},{text:'Email sent',time:d(3)}],messages:[
+      {id:201,direction:'sent',channel:'Email',body:'Hi team, loved your latest peptide lip treatment launch! Reaching out to explore a potential partnership for our creator roster.',time:d(3)},
+      {id:202,direction:'sent',channel:'Instagram DM',body:'Following up on the email I sent — would love to chat about a collab if you have 15 mins this week 🙌',time:d(2)},
+    ],createdAt:d(3)},
+    {id:3,name:'Gymshark',niche:'Fitness',email:'',tiktok:'@gymshark',instagram:'@gymshark',linkedin:'',twitter:'',priority:'medium',stage:'prospecting',notes:'Large audience, fitness niche. Research their collab rates.',channels:['TikTok','Instagram'],activity:[],messages:[],createdAt:d(1)},
+    {id:4,name:'Notion',niche:'Productivity / SaaS',email:'partnerships@notion.so',tiktok:'',instagram:'',linkedin:'notion',twitter:'',priority:'medium',stage:'prospecting',notes:'Good fit for productivity content.',channels:['Email','LinkedIn'],activity:[],messages:[],createdAt:d(0)},
+    {id:5,name:'Dyson',niche:'Tech / Home',email:'media@dyson.com',tiktok:'@dyson',instagram:'@dyson',linkedin:'',twitter:'',priority:'low',stage:'replied',notes:'Replied saying they\'ll review our media kit. Sent deck.',channels:['Email'],activity:[{text:'Media kit sent',time:d(1)},{text:'Replied to our email',time:d(2)},{text:'Email sent',time:d(4)}],messages:[
+      {id:501,direction:'sent',channel:'Email',body:'Hi, we\'d love to feature Dyson products with our tech-focused creators. Do you have a media kit request process?',time:d(4)},
+      {id:502,direction:'received',channel:'Email',body:'Thanks for reaching out — please send over your media kit and we\'ll review internally.',time:d(2)},
+      {id:503,direction:'sent',channel:'Email',body:'Sent! Let me know if you need anything else from our end.',time:d(1)},
+    ],createdAt:d(4)},
+    {id:6,name:'Lululemon',niche:'Fashion / Fitness',email:'',tiktok:'@lululemon',instagram:'@lululemon',linkedin:'',twitter:'',priority:'medium',stage:'closed',notes:'Signed! 3-post TikTok deal for Ramadan collection.',channels:['Email','TikTok'],activity:[{text:'Deal signed 🎉',time:d(0)},{text:'Negotiated terms',time:d(3)},{text:'In talks',time:d(7)}],messages:[],createdAt:d(14)},
+    {id:7,name:'Zara',niche:'Fashion',email:'',tiktok:'',instagram:'',linkedin:'',twitter:'',priority:'low',stage:'pass',notes:'Not the right fit for our audience right now.',channels:[],activity:[{text:'Marked as pass',time:d(2)}],messages:[],createdAt:d(8)},
   ];
 }
 
@@ -496,6 +583,7 @@ function renderKanban(){
         card.className = 'brand-card';
         const chHtml = (b.channels||[]).map(c=>`<span class="bc-ch ch-${c.toLowerCase()}">${c}</span>`).join('');
         const date = b.createdAt ? new Date(b.createdAt).toLocaleDateString('en-GB',{day:'numeric',month:'short'}) : '';
+        const msgCount = (b.messages||[]).length;
         card.innerHTML = `
           <div class="bc-top">
             <div><div class="bc-name">${esc(b.name)}</div><div class="bc-niche">${esc(b.niche||'')}</div></div>
@@ -504,7 +592,10 @@ function renderKanban(){
           ${chHtml?`<div class="bc-channels">${chHtml}</div>`:''}
           <div class="bc-footer">
             <span class="bc-date">${date}</span>
-            <span class="bc-priority pri-${b.priority||'medium'}">${(b.priority||'medium').charAt(0).toUpperCase()+(b.priority||'medium').slice(1)}</span>
+            <span style="display:flex;align-items:center;gap:8px">
+              ${msgCount?`<span class="bc-msgcount">💬 ${msgCount}</span>`:''}
+              <span class="bc-priority pri-${b.priority||'medium'}">${(b.priority||'medium').charAt(0).toUpperCase()+(b.priority||'medium').slice(1)}</span>
+            </span>
           </div>
         `;
         card.onclick = ()=>openPanel(b.id);
@@ -521,6 +612,7 @@ function openPanel(id){
   const b = state.brands.find(x=>x.id===id);
   if(!b) return;
   editingId = id;
+  if(!b.messages) b.messages = [];
   const bg = avatarBg(b.name);
 
   document.getElementById('panelHeader').innerHTML = `
@@ -529,11 +621,29 @@ function openPanel(id){
     <button class="panel-close" onclick="closePanel()">✕</button>
   `;
 
+  renderOverviewPane(b);
+  renderMessagesPane(b);
+  renderActivityPane(b);
+  document.getElementById('msgCountBadge').textContent = b.messages.length;
+
+  switchPanelTab('overview');
+  document.getElementById('panelOverlay').classList.add('open');
+  document.getElementById('sidePanel').classList.add('open');
+}
+
+function switchPanelTab(tab){
+  currentPanelTab = tab;
+  document.querySelectorAll('.panel-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel-pane').forEach(p=>p.classList.remove('active'));
+  document.getElementById('ptab-'+tab).classList.add('active');
+  document.getElementById('pane-'+tab).classList.add('active');
+}
+
+function renderOverviewPane(b){
   const stagePills = STAGES.map(s=>`<button class="stage-pill${b.stage===s.id?' active':''}" style="${b.stage===s.id?`background:${s.color}20;border-color:${s.color};color:${s.color}`:''}" onclick="setStage('${s.id}')">${s.label}</button>`).join('');
   const chToggles = CHANNELS.map(c=>`<button class="ch-toggle${(b.channels||[]).includes(c)?' on':''}" onclick="toggleChannel('${c}')">${c}</button>`).join('');
-  const actHtml = (b.activity||[]).map(a=>`<div class="act-item"><div class="act-dot"></div><div><div class="act-text">${esc(a.text)}</div><div class="act-time">${new Date(a.time).toLocaleDateString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</div></div></div>`).join('') || '<div style="font-size:12px;color:var(--text3)">No activity yet</div>';
 
-  document.getElementById('panelBody').innerHTML = `
+  document.getElementById('pane-overview').innerHTML = `
     <div class="panel-section">
       <div class="ps-label">Stage</div>
       <div class="stage-pills" id="stagePills">${stagePills}</div>
@@ -557,8 +667,15 @@ function openPanel(id){
       <div class="ps-label">Notes</div>
       <div class="field"><textarea id="pf-notes" rows="3">${esc(b.notes||'')}</textarea></div>
     </div>
+  `;
+}
+
+function renderActivityPane(b){
+  const actHtml = (b.activity||[]).map(a=>`<div class="act-item"><div class="act-dot"></div><div><div class="act-text">${esc(a.text)}</div><div class="act-time">${new Date(a.time).toLocaleDateString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</div></div></div>`).join('') || '<div style="font-size:12px;color:var(--text3)">No activity yet</div>';
+
+  document.getElementById('pane-activity').innerHTML = `
     <div class="panel-section">
-      <div class="ps-label">Activity</div>
+      <div class="ps-label">Activity log</div>
       <div class="activity-log">${actHtml}</div>
       <div class="add-note-row">
         <input class="note-input" id="actInput" placeholder="Log an activity…" onkeydown="if(event.key==='Enter')logActivity()"/>
@@ -566,9 +683,81 @@ function openPanel(id){
       </div>
     </div>
   `;
+}
 
-  document.getElementById('panelOverlay').classList.add('open');
-  document.getElementById('sidePanel').classList.add('open');
+// ── Messages pane ──
+function renderMessagesPane(b){
+  const msgs = (b.messages||[]).slice().sort((a,c)=>new Date(c.time)-new Date(a.time));
+  const msgHtml = msgs.length ? msgs.map(m=>messageItemHTML(m)).join('') : `
+    <div class="msg-empty">
+      <div class="msg-empty-icon">💬</div>
+      No messages logged yet.<br>Use the composer above to log your first outreach message.
+    </div>`;
+
+  document.getElementById('pane-messages').innerHTML = `
+    <div class="msg-composer">
+      <div class="msg-composer-row">
+        <div class="msg-dir-toggle">
+          <button class="msg-dir-btn sent${msgDirection==='sent'?' active':''}" onclick="setMsgDirection('sent')">Sent</button>
+          <button class="msg-dir-btn received${msgDirection==='received'?' active':''}" onclick="setMsgDirection('received')">Received</button>
+        </div>
+        <select class="msg-channel-select" id="msgChannelSelect">
+          ${MSG_CHANNELS.map(c=>`<option value="${c}">${c}</option>`).join('')}
+        </select>
+      </div>
+      <textarea class="msg-body-input" id="msgBodyInput" placeholder="Paste or write the message…" rows="3"></textarea>
+      <div class="msg-composer-footer">
+        <button class="btn btn-primary" onclick="logMessage()">Log message</button>
+      </div>
+    </div>
+    <div class="msg-list" id="msgList">${msgHtml}</div>
+  `;
+}
+
+function messageItemHTML(m){
+  const time = new Date(m.time).toLocaleDateString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+  return `<div class="msg-item ${m.direction}">
+    <div class="msg-item-header">
+      <span class="msg-dir-badge ${m.direction}">${m.direction === 'sent' ? 'Sent' : 'Received'}</span>
+      <span class="msg-channel-badge">${esc(m.channel)}</span>
+      <span class="msg-item-time">${time}</span>
+      <button class="msg-item-del" onclick="deleteMessage(${m.id})" title="Delete message">✕</button>
+    </div>
+    <div class="msg-item-body">${esc(m.body)}</div>
+  </div>`;
+}
+
+function setMsgDirection(dir){
+  msgDirection = dir;
+  document.querySelectorAll('.msg-dir-btn').forEach(btn=>{
+    const isThis = btn.classList.contains(dir);
+    btn.classList.toggle('active', isThis);
+  });
+}
+
+function logMessage(){
+  const b = state.brands.find(x=>x.id===editingId);
+  if(!b) return;
+  const body = (document.getElementById('msgBodyInput').value||'').trim();
+  if(!body){ document.getElementById('msgBodyInput').focus(); return; }
+  const channel = document.getElementById('msgChannelSelect').value;
+  if(!b.messages) b.messages = [];
+  b.messages.push({ id: Date.now(), direction: msgDirection, channel, body, time: new Date().toISOString() });
+  save();
+  renderMessagesPane(b);
+  document.getElementById('msgCountBadge').textContent = b.messages.length;
+  renderAll();
+  toast('Message logged ✓');
+}
+
+function deleteMessage(msgId){
+  const b = state.brands.find(x=>x.id===editingId);
+  if(!b) return;
+  b.messages = (b.messages||[]).filter(m=>m.id!==msgId);
+  save();
+  renderMessagesPane(b);
+  document.getElementById('msgCountBadge').textContent = b.messages.length;
+  renderAll();
 }
 
 function closePanel(){
@@ -611,8 +800,7 @@ function logActivity(){
   if(!b.activity) b.activity=[];
   b.activity.unshift({text, time:new Date().toISOString()});
   save();
-  input.value='';
-  openPanel(editingId);
+  renderActivityPane(b);
 }
 
 function savePanel(){
@@ -646,7 +834,7 @@ function createBrand(){
     priority:document.getElementById('nb-priority').value,
     stage:document.getElementById('nb-stage').value,
     notes:document.getElementById('nb-notes').value,
-    channels:[], activity:[], createdAt:new Date().toISOString(),
+    channels:[], activity:[], messages:[], createdAt:new Date().toISOString(),
   };
   if(b.email) b.channels.push('Email');
   if(b.tiktok) b.channels.push('TikTok');
